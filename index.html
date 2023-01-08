@@ -2,12 +2,52 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    <link rel="stylesheet" href="main.css" />
+    <title>Eardle</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div style="margin-bottom: 3rem">EARDLE</div>
+      <div id="guesses">
+        <div>
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div>
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div>
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div>
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div>
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div>
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+      <div id="keyboard">
+        <div>
+          <span>Q</span><span>W</span><span>E</span><span>R</span><span>T</span
+          ><span>Y</span><span>U</span><span>I</span><span>O</span
+          ><span>P</span>
+        </div>
+        <div>
+          <span>A</span><span>S</span><span>D</span><span>F</span><span>G</span
+          ><span>H</span><span>J</span><span>K</span><span>L</span>
+        </div>
+        <div>
+          <span>go</span><span>Z</span><span>X</span><span>C</span><span>V</span
+          ><span>B</span><span>N</span><span>M</span><span>del</span>
+        </div>
+      </div>
+      <a href="/create/">make a new one</a>
+    </div>
+
+    <script src="/htmx.min.js"></script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
