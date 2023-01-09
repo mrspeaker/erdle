@@ -61,15 +61,8 @@ button:focus-visible {
   text-align: center;
 }
 
-body {
-}
-
 #guesses {
   padding-bottom: 2rem;
-}
-
-#guesses > div {
-  
 }
 
 #guesses > div span {

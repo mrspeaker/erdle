@@ -4,7 +4,7 @@ const playDiv = document.getElementById("playDiv");
 const badDiv = document.getElementById("badDiv");
 const btnGo = document.getElementById("go");
 
-playDiv.style.visibility = "hidden";
+playDiv && (playDiv.style.visibility = "hidden");
 
 const test_word = () => {
   const word = txt_word.value.toLowerCase();
@@ -20,3 +20,5 @@ const test_word = () => {
 
 btnGo?.addEventListener("click", test_word, false);
 txt_word?.addEventListener("keyup", () => test_word, false);
+
+export {}

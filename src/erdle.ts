@@ -4,9 +4,9 @@ type Alpha = typeof alphabet[number];
 export type Word = Alpha[];
 
 export enum GuessState {
-  "none",
-  "misordered",
-  "found",
+  "none" = 0,
+  "misordered" = 1,
+  "found" = 2,
 }
 export type GuessStatus = GuessState[];
 export type GuessResult = [Word, GuessStatus];
@@ -24,13 +24,9 @@ export const create_word = (str: string): Word =>
   str.split("").map((ch) => (alphabet.includes(ch) ? ch : "z"));
 
 export const is_solved = (guess: GuessStatus) =>
-  guess.every((g) => g === GuessState.found);
+  guess.length && guess.every((g) => g === GuessState.found);
 
 export const test_guess = (guess: Word, target: Word): GuessStatus => {
-  if (guess.length !== target.length) {
-    throw new Error("Bad word lengths");
-  }
-
   // mark direct hits
   const marked = guess.map((ch, i) => ch === target[i]);
   return guess.map((ch, i) => {
