@@ -1,24 +1,4 @@
-// prettier-ignore
-const alphabet = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"] as const;
-type Alpha = typeof alphabet[number];
-type Word = Alpha[];
-
-enum GuessState {
-  "none",
-  "misordered",
-  "found",
-}
-type GuessStatus = GuessState[];
-type GuessResult = [Word, GuessStatus];
-type GuessHistory = GuessResult[];
-type GameState = {
-  state: string;
-  target: Word;
-  guesses: GuessHistory[];
-  guess_doms: HTMLElement[][];
-  cur_guess: Word;
-  words: string[];
-};
+import { create_word, decode_param, GameState, Word, guess_is_valid_wordle, is_solved, test_guess, GuessStatus } from "./erdle";
 
 const reducer = (state: GameState, action: object): GameState => {
   console.log("Action:", action.type);
@@ -34,56 +14,6 @@ const reducer = (state: GameState, action: object): GameState => {
   return state;
 };
 
-const create_word = (str: string): Word =>
-  str.split("").map((ch) => (alphabet.includes(ch) ? ch : "z"));
-
-const is_solved = (guess: GuessStatus) =>
-  guess.every((g) => g === GuessState.found);
-
-const test_guess = (guess: Word, target: Word): GuessStatus => {
-  if (guess.length !== target.length) {
-    throw new Error("Bad word lengths");
-  }
-
-  // mark direct hits
-  const marked = guess.map((ch, i) => ch === target[i]);
-  return guess.map((ch, i) => {
-    if (ch === target[i]) {
-      return GuessState.found;
-    }
-    let state = GuessState.none;
-    for (let j = 0; j < target.length; j++) {
-      if (ch === target[j] && !marked[j]) {
-        state = GuessState.misordered;
-        marked[j] = true;
-      }
-    }
-    return state;
-  });
-};
-
-const add_guess = (
-  guess: Word,
-  target: Word,
-  history: GuessHistory
-): [GuessStatus, GuessHistory] => {
-  const result = test_guess(guess, target);
-  history.push([guess, result]);
-  return [result, history];
-};
-
-const guess_is_valid_wordle = (guess: Word, wordles: string[]) =>
-  wordles.includes(guess.join(""));
-
-const decode_param = (coded?: string) => {
-  if (!coded) return null;
-  const uncoded = atob(coded);
-  const word = uncoded.toLowerCase();
-  if (word.match(/^[a-z]{5}$/)) {
-    return word;
-  }
-  return null;
-};
 
 const load_words = async () =>
   fetch("./words")
@@ -176,17 +106,21 @@ const on_guess = (game: GameState) => {
   const solved = is_solved(result);
   const valid = guess_is_valid_wordle(cur_guess, words);
 
+  guess_doms[guesses.length][0].parentNode.classList.remove("shake");
   if (solved || valid) {
     // Add guess and reset current
     color_dom(guess_doms[guesses.length], result);
-    guesses.push([cur_guess.slice(0), result]);
     game.cur_guess = [];
     if (guesses.length === 6 || solved) {
       game.state = "GAME_OVER";
       alert(solved ? "success!" : "was: " + target.join(""));
     }
   } else if (!valid) {
-    alert("bad word, try again!");
+    //alert("bad word, try again!");
+    setTimeout(() => {
+      //alert("what");
+      guess_doms[guesses.length][0].parentNode.classList.add("shake");
+    },1);
   }
 };
 
