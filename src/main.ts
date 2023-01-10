@@ -117,6 +117,7 @@ const on_add_letter = (game: GameState, ch: string[1]): GameState => {
     next_guess.push(ch_low);
   }
   // Hmmm... bad mutatin'... but it's the DOM. What to do?
+  // should at least be done in reducer
   guess_doms[guesses.length][next_guess.length - 1].innerText = ch_low;
   return {
     ...game,
@@ -124,14 +125,18 @@ const on_add_letter = (game: GameState, ch: string[1]): GameState => {
   };
 };
 
+// TODO: convert to reducer
 const on_remove_letter = (game: GameState) => {
   const { cur_guess, guesses, guess_doms } = game;
-  if (cur_guess.length) {
-    guess_doms[guesses.length][cur_guess.length - 1].innerText = "";
-    cur_guess.pop();
+  if (!cur_guess.length) {
+    return;
   }
+  guess_doms[guesses.length][cur_guess.length - 1].innerText = "";
+  cur_guess.pop();
+  
 };
 
+// TODO: convert to reducer
 const on_guess = (game: GameState) => {
   const { cur_guess, guesses, guess_doms, target, words } = game;
 
