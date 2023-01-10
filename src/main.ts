@@ -5,13 +5,13 @@ import {
   guess_is_valid_wordle,
   is_solved,
   test_guess,
-} from "./erdle";
+} from "./meedle";
 
 import type {
   GameState,
   GuessStatus,
   Word,
-} from "./erdle";
+} from "./meedle";
 
 import { $, $$, event, shake_dom } from "./dom";
 
@@ -34,9 +34,9 @@ async function init_app() {
 
   event(document.body, "keydown", (e) => {
     if (e.code === "Enter") {
-      on_guess(game);
+      dispatch({ type: "WORD_GUESS" });
     } else if (e.code === "Backspace") {
-      on_remove_letter(game);
+      dispatch({ type: "LETTER_REMOVE" });
     } else if (e.code.startsWith("Key")) {
       dispatch({ type: "LETTER_ADD", key: e.key });
     }
@@ -48,9 +48,9 @@ async function init_app() {
     if (nodeName.trim().toLowerCase() === "span") {
       const key = innerText.trim().toLowerCase();
       if (key === "go") {
-        on_guess(game);
+        dispatch({ type: "WORD_GUESS" });
       } else if (key === "del") {
-        on_remove_letter(game);
+        dispatch({ type: "LETTER_REMOVE" });
       } else {
         dispatch({ type: "LETTER_ADD", key });
       }
@@ -73,6 +73,7 @@ const init_game = (
   guess_doms,
   cur_guess: [],
   words,
+  alphabet: []
 });
 
 // ============================
@@ -98,6 +99,12 @@ const reducer = (state: GameState, action: object): GameState => {
       };
     case "LETTER_ADD":
       return on_add_letter(state, action.key);
+    case "LETTER_REMOVE":
+      return on_remove_letter(state);
+    case "WORD_GUESS":
+      return on_guess(state);
+    default:
+      console.warn("unhandled action", action);
   }
   return state;
 };
@@ -116,8 +123,8 @@ const on_add_letter = (game: GameState, ch: string[1]): GameState => {
   } else {
     next_guess.push(ch_low);
   }
-  // Hmmm... bad mutatin'... but it's the DOM. What to do?
-  // should at least be done in reducer
+  
+  // TODO: should at least be done in reducer
   guess_doms[guesses.length][next_guess.length - 1].innerText = ch_low;
   return {
     ...game,
@@ -125,19 +132,21 @@ const on_add_letter = (game: GameState, ch: string[1]): GameState => {
   };
 };
 
-// TODO: convert to reducer
-const on_remove_letter = (game: GameState) => {
+const on_remove_letter = (game: GameState): GameState => {
   const { cur_guess, guesses, guess_doms } = game;
   if (!cur_guess.length) {
-    return;
+    return game;
   }
-  guess_doms[guesses.length][cur_guess.length - 1].innerText = "";
-  cur_guess.pop();
   
+  // TODO: should at least be done in reducer
+  guess_doms[guesses.length][cur_guess.length - 1].innerText = "";
+  return {
+    ...game,
+    cur_guess: cur_guess.slice(0, -1)
+  }
 };
 
-// TODO: convert to reducer
-const on_guess = (game: GameState) => {
+const on_guess = (game: GameState): GameState => {
   const { cur_guess, guesses, guess_doms, target, words } = game;
 
   const isFullGuess = cur_guess.length === 5;
@@ -148,6 +157,7 @@ const on_guess = (game: GameState) => {
   if (solved || valid) {
     // Add guess and reset current
     color_dom(guess_doms[guesses.length], result);
+    // TODO: copy not mutate
     guesses.push([cur_guess.slice(0), result]);
     game.cur_guess = [];
     if (guesses.length === 6 || solved) {
@@ -156,9 +166,14 @@ const on_guess = (game: GameState) => {
         alert("Was: " + target.join(""));
       }
     }
-  } else if (!valid && isFullGuess) {
+    // TODO: set keyboard key colors
+    return game;
+  }
+  if (!valid && isFullGuess) {
     shake_dom(guess_doms[guesses.length][0].parentNode as HTMLElement);
   }
+  
+  return game;
 };
 
 const color_dom = (doms: HTMLElement[], status: GuessStatus) =>

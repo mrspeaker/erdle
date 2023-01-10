@@ -5,8 +5,6 @@ const link = $("#playIt");
 const playDiv = $("#playDiv");
 const badDiv = $("#badDiv");
 
-hide(playDiv);
-
 const test_word = () => {
   const word = txtWord?.value.toLowerCase() ?? "";
   if (word.match(/^[a-z]{5}$/)) {
@@ -20,5 +18,6 @@ const test_word = () => {
 };
 
 event(txtWord, "keyup",test_word);
+hide(playDiv);
 
-export {}
+export {};

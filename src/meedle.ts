@@ -18,6 +18,7 @@ export type GameState = {
   guess_doms: HTMLElement[][];
   cur_guess: Word;
   words: string[];
+  alphabet: GuessState[];
 };
 
 export const create_word = (str: string): Word =>
