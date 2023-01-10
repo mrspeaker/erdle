@@ -1,24 +1,24 @@
-const txt_word = document.getElementById("txtWord");
-const link = document.getElementById("playIt");
-const playDiv = document.getElementById("playDiv");
-const badDiv = document.getElementById("badDiv");
-const btnGo = document.getElementById("go");
+import { $, event, show, hide } from "./dom";
 
-playDiv && (playDiv.style.visibility = "hidden");
+const txtWord = $("#txtWord");
+const link = $("#playIt");
+const playDiv = $("#playDiv");
+const badDiv = $("#badDiv");
+
+hide(playDiv);
 
 const test_word = () => {
-  const word = txt_word.value.toLowerCase();
+  const word = txtWord?.value.toLowerCase() ?? "";
   if (word.match(/^[a-z]{5}$/)) {
-    link.setAttribute("href", `/?word=${btoa(word)}`);
-    playDiv.style.visibility = "visible";
-    badDiv.style.visibility = "hidden";
+    link?.setAttribute("href", `/?word=${btoa(word)}`);
+    show(playDiv);
+    hide(badDiv);
   } else {
-    badDiv.style.visibility = "visible";
-    playDiv.style.visibility = "hidden";
+    hide(playDiv);
+    show(badDiv);
   }
 };
 
-btnGo?.addEventListener("click", test_word, false);
-txt_word?.addEventListener("keyup", () => test_word, false);
+event(txtWord, "keyup",test_word);
 
 export {}

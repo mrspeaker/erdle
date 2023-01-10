@@ -13,57 +13,49 @@ import type {
   Word,
 } from "./erdle";
 
-import { $, $$, shake_dom } from "./dom";
+import { $, $$, event, shake_dom } from "./dom";
 
 async function init_app() {
   const params = get_params();
   const words = await load_words();
   const target_word =
     decode_param(params.word) ?? words[(Math.random() * words.length) | 0];
-    
+
   const guess_doms = $$("#guesses > div").map((d) => $$("span", d));
 
   // == Here's where game gets mutated ==
+  const dispatch = (action: object) => (game = reducer(game, action));
   let game = init_game(
     create_word(target_word),
     words,
     guess_doms
   );
-  const dispatch = (action: object) => (game = reducer(game, action));
   // ====================================
-  
-  document.body.addEventListener(
-    "keydown",
-    (e) => {
-      if (e.code === "Enter") {
-        on_guess(game);
-      } else if (e.code === "Backspace") {
-        on_remove_letter(game);
-      } else if (e.code.startsWith("Key")) {
-        dispatch({ type: "LETTER_ADD", key: e.key });
-      }
-    },
-    false
-  );
 
-  $("#keyboard")?.addEventListener(
-    "click",
-    (e) => {
-      const { target } = e;
-      const { nodeName, innerText } = target;
-      if (nodeName.trim().toLowerCase() === "span") {
-        const key = innerText.trim().toLowerCase();
-        if (key === "go") {
-          on_guess(game);
-        } else if (key === "del") {
-          on_remove_letter(game);
-        } else {
-          dispatch({ type: "LETTER_ADD", key });
-        }
+  event(document.body, "keydown", (e) => {
+    if (e.code === "Enter") {
+      on_guess(game);
+    } else if (e.code === "Backspace") {
+      on_remove_letter(game);
+    } else if (e.code.startsWith("Key")) {
+      dispatch({ type: "LETTER_ADD", key: e.key });
+    }
+  });
+
+  event($("#keyboard"), "click", (e) => {
+    const { target } = e;
+    const { nodeName, innerText } = target;
+    if (nodeName.trim().toLowerCase() === "span") {
+      const key = innerText.trim().toLowerCase();
+      if (key === "go") {
+        on_guess(game);
+      } else if (key === "del") {
+        on_remove_letter(game);
+      } else {
+        dispatch({ type: "LETTER_ADD", key });
       }
-    },
-    false
-  );
+    }
+  });
 
   dispatch({ type: "GAME_START" });
 }
@@ -90,7 +82,7 @@ async function load_words() {
     .then((raw) => raw.split("\n"));
 }
 
-function get_params () {
+function get_params() {
   return Object.fromEntries(
     new URLSearchParams(window.location.search).entries()
   )
@@ -117,7 +109,7 @@ const on_add_letter = (game: GameState, ch: string[1]): GameState => {
   }
   const ch_low = ch.toLowerCase();
   const next_guess = cur_guess.slice(0);
-  
+
   if (next_guess.length === target.length) {
     // Just update the last character
     next_guess[next_guess.length - 1] = ch_low;
@@ -142,7 +134,7 @@ const on_remove_letter = (game: GameState) => {
 
 const on_guess = (game: GameState) => {
   const { cur_guess, guesses, guess_doms, target, words } = game;
-  
+
   const isFullGuess = cur_guess.length === 5;
   const result = test_guess(cur_guess, target);
   const solved = isFullGuess && is_solved(result);
@@ -155,16 +147,27 @@ const on_guess = (game: GameState) => {
     game.cur_guess = [];
     if (guesses.length === 6 || solved) {
       game.state = "GAME_OVER";
-      alert(solved ? "success!" : "was: " + target.join(""));
+      if (!solved) {
+        alert("Was: " + target.join(""));
+      }
     }
   } else if (!valid && isFullGuess) {
-    shake_dom(guess_doms[guesses.length][0].parentNode as HTMLElement);    
+    shake_dom(guess_doms[guesses.length][0].parentNode as HTMLElement);
   }
 };
 
-const color_dom = (doms: HTMLElement[], status: GuessStatus) => 
+const color_dom = (doms: HTMLElement[], status: GuessStatus) =>
   doms.forEach((d, i) => {
     d.classList.remove("misordered", "found");
-    if (status[i] === GuessState.misordered) d.classList.add("misordered");
-    if (status[i] === GuessState.found) d.classList.add("found");
+    const t = i * 0.4;
+    const t_delay = Math.max(0, (t - 0.1));
+    d.style.animationDelay = t_delay + "s";
+    d.classList.add("flip");
+    if (status[i] === GuessState.misordered) {
+      setTimeout(()=>d.classList.add("misordered"), t * 1000);
+    }
+    if (status[i] === GuessState.found) {
+      setTimeout(()=>d.classList.add("found"), t * 1000);
+    }
   });
+  

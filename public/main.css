@@ -46,6 +46,7 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
+  color: #888;
 }
 button:hover {
   border-color: #646cff;
@@ -108,6 +109,34 @@ button:focus-visible {
   animation: shake-anim 0.2s;
   animation-iteration-count: 3;
 }
+
+.flip {
+  animation: flip-anim 0.5s;
+  animation-iteration-count: 1;
+}
+
+@keyframes flip-anim {
+  0% {
+     transform: perspective(400px) rotateY(0);
+     animation-timing-function: ease-out;
+  }
+  40% {
+     transform: perspective(400px) translateZ(150px) rotateY(170deg);
+     animation-timing-function: ease-out;
+  }
+  50% {
+     transform: perspective(400px) translateZ(150px) rotateY(190deg) scale(1);
+     animation-timing-function: ease-in;
+  }
+  80% {
+     transform: perspective(400px) rotateY(360deg) scale(.95);
+     animation-timing-function: ease-in;
+  }
+  100% {
+     transform: perspective(400px) scale(1);
+     animation-timing-function: ease-in;
+  }
+} 
 
 @keyframes shake-anim {
   0% { transform: translateX(0) }
