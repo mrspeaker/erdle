@@ -7,11 +7,7 @@ import {
   test_guess,
 } from "./meedle";
 
-import type {
-  GameState,
-  GuessStatus,
-  Word,
-} from "./meedle";
+import type { GameState, GuessStatus, Word } from "./meedle";
 
 import { $, $$, event, shake_dom } from "./dom";
 
@@ -25,11 +21,7 @@ async function init_app() {
 
   // == Here's where game gets mutated ==
   const dispatch = (action: object) => (game = reducer(game, action));
-  let game = init_game(
-    create_word(target_word),
-    words,
-    guess_doms
-  );
+  let game = init_game(create_word(target_word), words, guess_doms);
   // ====================================
 
   event(document.body, "keydown", (e) => {
@@ -73,7 +65,7 @@ const init_game = (
   guess_doms,
   cur_guess: [],
   words,
-  alphabet: []
+  alphabet: [],
 });
 
 // ============================
@@ -86,7 +78,7 @@ async function load_words() {
 function get_params() {
   return Object.fromEntries(
     new URLSearchParams(window.location.search).entries()
-  )
+  );
 }
 
 const reducer = (state: GameState, action: object): GameState => {
@@ -123,7 +115,7 @@ const on_add_letter = (game: GameState, ch: string[1]): GameState => {
   } else {
     next_guess.push(ch_low);
   }
-  
+
   // TODO: should at least be done in reducer
   guess_doms[guesses.length][next_guess.length - 1].innerText = ch_low;
   return {
@@ -137,13 +129,13 @@ const on_remove_letter = (game: GameState): GameState => {
   if (!cur_guess.length) {
     return game;
   }
-  
+
   // TODO: should at least be done in reducer
   guess_doms[guesses.length][cur_guess.length - 1].innerText = "";
   return {
     ...game,
-    cur_guess: cur_guess.slice(0, -1)
-  }
+    cur_guess: cur_guess.slice(0, -1),
+  };
 };
 
 const on_guess = (game: GameState): GameState => {
@@ -172,22 +164,31 @@ const on_guess = (game: GameState): GameState => {
   if (!valid && isFullGuess) {
     shake_dom(guess_doms[guesses.length][0].parentNode as HTMLElement);
   }
-  
+
   return game;
 };
 
 const color_dom = (doms: HTMLElement[], status: GuessStatus) =>
   doms.forEach((d, i) => {
+    const key = $(
+      `#keyboard > div > span[data-key="${d?.textContent.toLowerCase() ?? ""}"]`
+    );
     d.classList.remove("misordered", "found");
     const t = i * 0.4;
-    const t_delay = Math.max(0, (t - 0.1));
+    const t_delay = Math.max(0, t - 0.1);
     d.style.animationDelay = t_delay + "s";
     d.classList.add("flip");
-    if (status[i] === GuessState.misordered) {
-      setTimeout(()=>d.classList.add("misordered"), t * 1000);
-    }
-    if (status[i] === GuessState.found) {
-      setTimeout(()=>d.classList.add("found"), t * 1000);
-    }
+    setTimeout(() => {
+      if (status[i] === GuessState.misordered) {
+        d.classList.add("misordered");
+        if (!key?.classList.contains("found")) {
+          key?.classList.add("misordered");
+        }
+      } else if (status[i] === GuessState.found) {
+        d.classList.add("found");
+        key?.classList.add("found");
+      } else {
+        key?.classList.add("nope");
+      }
+    }, t * 1000);
   });
-  

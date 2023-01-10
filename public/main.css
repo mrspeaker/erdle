@@ -95,14 +95,18 @@ button:focus-visible {
   content: "\200b"; /* unicode zero width space character */
 }
 
-#guesses > div span.misordered {
+#guesses > div span.misordered,
+#keyboard > div span.misordered {
   background-color: #a74;
-  border-color: #a74;
 }
 
-#guesses > div span.found {
+#guesses > div span.found,
+#keyboard > div span.found {
   background-color: #074;
-  border-color: #074;
+}
+
+#keyboard > div span.nope {
+  background-color: #333;
 }
 
 .shake {
