@@ -32,8 +32,8 @@ body {
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  font-size: 2.5em;
+  text-transform: uppercase;
 }
 
 button {
@@ -62,32 +62,37 @@ button:focus-visible {
   text-align: center;
 }
 
+#target-info {
+  visibility: hidden;
+  padding: 0.5em 0;
+}
+
 #guesses {
-  padding-bottom: 2rem;
 }
 
 #guesses > div span {
   display: inline-block;
-  width: 2rem;
-  height: 2rem;
+  width: 4rem;
+  height: 4rem;
   margin-right: 4px;
   margin-bottom: 4px;
   border: 1px solid #000;
   text-transform: uppercase;
   background-color: #444;
   font-size: 1.2rem;
-  line-height: 2rem;
+  line-height: 4rem;
 }
+
 #keyboard > div > span {
   display: inline-block;
   width: 2rem;
-  height: 2.5rem;
+  height: 4rem;
   margin-right: 4px;
   margin-bottom: 4px;
   text-transform: uppercase;
   background-color: #444;
   font-size: 0.8rem;
-  line-height: 2.5rem;
+  line-height: 4rem;
   border-radius: 4px;
 }
 

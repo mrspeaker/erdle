@@ -145,7 +145,7 @@ const on_guess = (game: GameState): GameState => {
   const result = test_guess(cur_guess, target);
   const solved = isFullGuess && is_solved(result);
   const valid = guess_is_valid_wordle(cur_guess, words);
-
+  
   if (solved || valid) {
     // Add guess and reset current
     color_dom(guess_doms[guesses.length], result);
@@ -155,7 +155,9 @@ const on_guess = (game: GameState): GameState => {
     if (guesses.length === 6 || solved) {
       game.state = "GAME_OVER";
       if (!solved) {
-        alert("Was: " + target.join(""));
+        $("#target-word").href="https://www.thefreedictionary.com/" + target.join("");
+        $("#target-word").textContent = target.join("");
+        $("#target-info").style.visibility = "visible";
       }
     }
     // TODO: set keyboard key colors
