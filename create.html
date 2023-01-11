@@ -4,17 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="main.css" />
-    <title>Meedle</title>
+    <title>Unfairdle</title>
   </head>
   <body>
     <div id="root">
-      <div>Enter five letter word:</div>
+      <p>Enter a custom five letter word.</p>
+      <p>You can send this link to you friend to play.</p>
       <input type="text" id="txtWord" />
       <div id="playDiv">
-        <div>Play it:</div>
-        <a href="?word=" id="playIt">Click/copy link to play this word</a>
+        <br/>
+        <a href="?word=" id="playIt">Click/copy this link to play this word</a>
       </div>
       <div id="badDiv">Must be 5 letters long!</div>
+      <br/>
       <a href="index.html">Back</a>
     </div>
     <script type="module" src="src/create.ts"></script>

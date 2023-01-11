@@ -4,11 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="main.css" />
-    <title>Meedle</title>
+    <title>Unfairdle</title>
   </head>
   <body>
     <div id="root">
-      <h1>Meedle</h1>
+      <div style="text-align: left">
+      <h1 >UNFAIRDLE</h1>
+      <p id="about">There are 14,000 allowable Wordle words. Most of them make very poor target words. Unfairdle doesn't care.</p>
+      </div>
       <div id="guesses">
         <div>
           <span></span><span></span><span></span><span></span><span></span>
@@ -27,7 +30,7 @@
         </div>
         <div>
           <span></span><span></span><span></span><span></span><span></span>
-        </div>        
+        </div>
       </div>
       <div id="target-info">Word was: <a id="target-word" target="_blank" href=""></a>.</div>
       <div id="keyboard">
@@ -52,7 +55,10 @@
           ><span data-key="m">M</span><span>del</span>
         </div>
       </div>
-      <a href="create.html">Create one for a friend!</a>
+      <footer>
+        <a href="./">Start New game</a> |
+        <a href="create.html">Custom word for a friend!</a>
+      </footer>
     </div>
 
     <script type="module" src="src/main.ts"></script>

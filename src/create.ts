@@ -6,18 +6,18 @@ const playDiv = $("#playDiv");
 const badDiv = $("#badDiv");
 
 const test_word = () => {
-  const word = txtWord?.value.toLowerCase() ?? "";
-  if (word.match(/^[a-z]{5}$/)) {
-    link?.setAttribute("href", `/?word=${btoa(word)}`);
-    show(playDiv);
-    hide(badDiv);
-  } else {
-    hide(playDiv);
-    show(badDiv);
-  }
+    const word = txtWord?.value.toLowerCase() ?? "";
+    if (word.match(/^[a-z]{5}$/)) {
+        link?.setAttribute("href", `/?word=${btoa(word)}`);
+        show(playDiv);
+        hide(badDiv);
+    } else {
+        hide(playDiv);
+        show(badDiv);
+    }
 };
 
-event(txtWord, "keyup",test_word);
+event(txtWord, "keyup", test_word);
 hide(playDiv);
 
 export {};
