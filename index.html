@@ -10,7 +10,7 @@
     <div id="root">
       <div style="text-align: left">
       <h1 >UNFAIRDLE</h1>
-      <p id="about">There are 14,000 allowable Wordle words. Most of them make very poor target words. Unfairdle doesn't care.</p>
+      <p id="about">There are 14,000+ allowable Wordle guesses. Most make very poor Wordle target words. Unfairdle doesn't care.</p>
       </div>
       <div id="guesses">
         <div>
@@ -32,7 +32,10 @@
           <span></span><span></span><span></span><span></span><span></span>
         </div>
       </div>
-      <div id="target-info">Word was: <a id="target-word" target="_blank" href=""></a>.</div>
+      <div id="target-info">
+        <span>What does <a id="target-word" target="_blank" href=""></a> mean?</span>
+        <span class="again">Play again.</span>
+      </div>
       <div id="keyboard">
         <div>
           <span data-key="q">Q</span><span data-key="w">W</span
@@ -56,7 +59,7 @@
         </div>
       </div>
       <footer>
-        <a href="./">Start New game</a> |
+        <a class="again" href="./">Start new game</a> |
         <a href="create.html">Custom word for a friend!</a>
       </footer>
     </div>

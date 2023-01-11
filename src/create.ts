@@ -1,9 +1,9 @@
 import { $, event, show, hide } from "./dom";
 
-const txtWord = $("#txtWord");
-const link = $("#playIt");
 const playDiv = $("#playDiv");
 const badDiv = $("#badDiv");
+const txtWord = $("#txtWord") as (HTMLInputElement | null);
+const link = $("#playIt") as (HTMLLinkElement | null);
 
 const test_word = () => {
     const word = txtWord?.value.toLowerCase() ?? "";
@@ -17,7 +17,7 @@ const test_word = () => {
     }
 };
 
-event(txtWord, "keyup", test_word);
 hide(playDiv);
+event(txtWord, "keyup", test_word);
 
 export {};

@@ -1,6 +1,6 @@
 // prettier-ignore
 const alphabet = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"] as const;
-type Alpha = typeof alphabet[number];
+export type Alpha = typeof alphabet[number];
 export type Word = Alpha[];
 
 export enum GuessState {
@@ -16,13 +16,16 @@ export type GameState = {
     target: Word;
     cur_guess: Word;
     max_guesses: number;
-    guesses: GuessHistory[];
+    guesses: GuessHistory;
     guess_doms: HTMLElement[][];
     words: string[];
 };
 
 export const create_word = (str: string): Word =>
-    str.split("").map((ch) => (alphabet.includes(ch) ? ch : "z"));
+    str.split("").map((ch) => {
+        const isAlpha = (alphabet as ReadonlyArray<string>).includes(ch);
+        return (isAlpha ? ch : "z") as Alpha;
+    });
 
 export const is_solved = (guess: GuessStatus, length: number) =>
     guess.length === length && guess.every((g) => g === GuessState.found);
