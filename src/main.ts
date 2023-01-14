@@ -9,28 +9,31 @@ import {
 } from "./meedle";
 
 import type { Alpha, GameState, GuessStatus, Word } from "./meedle";
+import type { Action, Dispatcher } from "./store";
+import {
+    isGAME_START,
+    isLETTER_ADD,
+    isLETTER_REMOVE,
+    isWORD_GUESS,
+} from "./store";
 
 import { $, $$, add_class, remove_class, event, shake_dom } from "./dom";
 
 async function init_app() {
     const params = get_params();
     const words = await load_words();
-    const target_word =
-        decode_param(params.word) ?? words[(Math.random() * words.length) | 0];
-
     const guess_doms = $$("#guesses > div").map((d) => $$("span", d));
 
     // == Here's where `game` gets mutated ==
-    const dispatch = (action: Action) => (game = reducer(game, action));
-    let game = init_game(create_word(target_word), words, guess_doms);
+    let game = init_game(words, guess_doms);
+    const dispatch: Dispatcher = (action: Action) =>
+        (game = reducer(game, action));
 
     $$(".again").forEach((d) =>
         event(d, "click", (e) => {
             e.preventDefault();
-            // Reset DOM
-            //game = init_game(create_word(words[(Math.random() * words.length) | 0]), words, guess_doms);
-            //dispatch({ type: "GAME_START" });
-            window.location = "./index.html";
+            dispatch({ type: "GAME_START" });
+            document.activeElement.blur();
         })
     );
     // ====================================
@@ -44,7 +47,7 @@ async function init_app() {
             dispatch({ type: "LETTER_REMOVE" });
         } else if (code.startsWith("Key")) {
             // TODO check key is [a-z]
-            dispatch({ type: "LETTER_ADD", key: key as Alpha });
+            dispatch({ type: "LETTER_ADD", payload: { key: key as Alpha } });
         }
     });
 
@@ -61,24 +64,30 @@ async function init_app() {
                 dispatch({ type: "LETTER_REMOVE" });
             } else {
                 // TODO check key is [a-z]
-                dispatch({ type: "LETTER_ADD", key: key as Alpha });
+                dispatch({
+                    type: "LETTER_ADD",
+                    payload: { key: key as Alpha },
+                });
             }
         }
     });
 
-    dispatch({ type: "GAME_START" });
+    dispatch({
+        type: "GAME_START",
+        payload: { custom: decode_param(params.word) },
+    });
 }
 init_app();
 
 // ===========================
 
 const init_game = (
-    target: Word,
     words: string[],
-    guess_doms: HTMLElement[][]
+    guess_doms: HTMLElement[][],
+    target?: Word
 ): GameState => ({
     state: "GAME_INIT",
-    target,
+    target: target || (words[(Math.random() * words.length) | 0] as Word),
     max_guesses: 6,
     guesses: [],
     guess_doms,
@@ -102,25 +111,36 @@ function get_params() {
 
 // =========================
 
-type Action = { type: string; key?: Alpha };
-
 const reducer = (state: GameState, action: Action): GameState => {
-    console.log("ho", action.type);
-    switch (action.type) {
-        case "GAME_START":
-            return {
-                ...state,
-                state: "GAME_IN_PROGRESS",
-            };
-        case "LETTER_ADD":
-            return on_add_letter(state, action.key as Alpha);
-        case "LETTER_REMOVE":
-            return on_remove_letter(state);
-        case "WORD_GUESS":
-            return on_guess(state);
-        default:
-            console.warn("unhandled action", action);
+    if (isGAME_START(action)) {
+        const game = init_game(
+            state.words,
+            state.guess_doms,
+            create_word(
+                action.payload?.custom ??
+                    state.words[(Math.random() * state.words.length) | 0]
+            )
+        );
+        reset_dom(game.guess_doms);
+        return {
+            ...game,
+            state: "GAME_IN_PROGRESS",
+        };
     }
+
+    if (isLETTER_ADD(action)) {
+        return on_add_letter(state, action.payload.key);
+    }
+
+    if (isLETTER_REMOVE(action)) {
+        return on_remove_letter(state);
+    }
+
+    if (isWORD_GUESS(action)) {
+        return on_guess(state);
+    }
+
+    console.warn("unhandled action", action);
     return state;
 };
 
@@ -172,8 +192,6 @@ const on_remove_letter = (game: GameState): GameState => {
 const on_guess = (game: GameState): GameState => {
     const { cur_guess, guesses, guess_doms, max_guesses, target, words } = game;
 
-    console.log(JSON.stringify(cur_guess), JSON.stringify(guesses));
-
     const result = test_guess(cur_guess, target);
     const solved = is_solved(result, target.length);
     const valid = guess_is_valid_wordle(cur_guess, words);
@@ -198,6 +216,25 @@ const on_guess = (game: GameState): GameState => {
         cur_guess: [],
         guesses: [...guesses, newGuess],
     };
+};
+
+const reset_dom = (doms: HTMLElement[][]) => {
+    doms.map((ds) =>
+        ds.forEach((d) => {
+            d.classList.remove(
+                "flip",
+                "found",
+                "misordered",
+                "nope",
+                "shake",
+                "invalid"
+            );
+            d.innerText = "";
+        })
+    );
+    $$("#keyboard > div > span").forEach((s) =>
+        s.classList.remove("found", "nope", "misordered")
+    );
 };
 
 const color_dom = (doms: HTMLElement[], status: GuessStatus) =>
