@@ -10,7 +10,7 @@ import {
 
 import type { Alpha, GameState, GuessStatus, Word } from "./meedle";
 
-import { $, $$, event, shake_dom } from "./dom";
+import { $, $$, add_class, remove_class, event, shake_dom } from "./dom";
 
 async function init_app() {
     const params = get_params();
@@ -23,14 +23,16 @@ async function init_app() {
     // == Here's where `game` gets mutated ==
     const dispatch = (action: Action) => (game = reducer(game, action));
     let game = init_game(create_word(target_word), words, guess_doms);
-    
-    $$(".again").forEach(d => event(d, "click", (e) => {
-        e.preventDefault();
-        // Reset DOM
-        //game = init_game(create_word(words[(Math.random() * words.length) | 0]), words, guess_doms);
-        //dispatch({ type: "GAME_START" });
-        window.location = "./index.html";
-    }));
+
+    $$(".again").forEach((d) =>
+        event(d, "click", (e) => {
+            e.preventDefault();
+            // Reset DOM
+            //game = init_game(create_word(words[(Math.random() * words.length) | 0]), words, guess_doms);
+            //dispatch({ type: "GAME_START" });
+            window.location = "./index.html";
+        })
+    );
     // ====================================
 
     event(document.body, "keydown", (e: Event) => {
@@ -49,7 +51,7 @@ async function init_app() {
     event($("#keyboard"), "click", (e) => {
         const { target } = e;
         if (!target) return;
-        
+
         const { nodeName, innerText } = target as HTMLElement;
         if (nodeName.trim().toLowerCase() === "span") {
             const key = innerText.trim().toLowerCase();
@@ -100,7 +102,7 @@ function get_params() {
 
 // =========================
 
-type Action = { type: string, key?: Alpha };
+type Action = { type: string; key?: Alpha };
 
 const reducer = (state: GameState, action: Action): GameState => {
     console.log("ho", action.type);
@@ -129,7 +131,7 @@ const on_add_letter = (game: GameState, ch: Alpha): GameState => {
     if (state !== "GAME_IN_PROGRESS") {
         return game;
     }
-    
+
     const next_guess: Word = cur_guess.slice(0);
 
     if (next_guess.length === target.length) {
@@ -137,6 +139,13 @@ const on_add_letter = (game: GameState, ch: Alpha): GameState => {
         next_guess[next_guess.length - 1] = ch;
     } else {
         next_guess.push(ch);
+    }
+    if (next_guess.length === target.length) {
+        if (!guess_is_valid_wordle(next_guess, game.words)) {
+            add_class(guess_doms[guesses.length], "invalid");
+        } else {
+            remove_class(guess_doms[guesses.length], "invalid");
+        }
     }
 
     guess_doms[guesses.length][next_guess.length - 1].innerText = ch;
@@ -152,6 +161,7 @@ const on_remove_letter = (game: GameState): GameState => {
         return game;
     }
 
+    remove_class(guess_doms[guesses.length], "invalid");
     guess_doms[guesses.length][cur_guess.length - 1].innerText = "";
     return {
         ...game,
@@ -161,7 +171,7 @@ const on_remove_letter = (game: GameState): GameState => {
 
 const on_guess = (game: GameState): GameState => {
     const { cur_guess, guesses, guess_doms, max_guesses, target, words } = game;
-    
+
     console.log(JSON.stringify(cur_guess), JSON.stringify(guesses));
 
     const result = test_guess(cur_guess, target);
@@ -181,7 +191,7 @@ const on_guess = (game: GameState): GameState => {
     const newGuess: GuessResult = [cur_guess.slice(0), result];
     const isGameOver = guesses.length + 1 === max_guesses || solved;
     isGameOver && show_word_dom(target.join(""));
-    
+
     return {
         ...game,
         state: isGameOver ? "GAME_OVER" : game.state,
@@ -220,8 +230,8 @@ const color_dom = (doms: HTMLElement[], status: GuessStatus) =>
 const show_word_dom = (target: string) => {
     const wordLink = $("#target-word") as HTMLLinkElement;
     const infoDiv = $("#target-info") as HTMLDivElement;
-    
+
     wordLink.href = "https://www.thefreedictionary.com/" + target;
-    wordLink.textContent = target;    
+    wordLink.textContent = target;
     infoDiv.style.visibility = "visible";
 };

@@ -22,3 +22,9 @@ export const shake_dom = (dom?: HTMLElement) => {
         dom.classList.remove("shake");
     }, 1000);
 };
+
+export const add_class = (doms: HTMLElement[], className: string) =>
+    doms.forEach((d) => d.classList.add(className));
+
+export const remove_class = (doms: HTMLElement[], className: string) =>
+    doms.forEach((d) => d.classList.remove(className));

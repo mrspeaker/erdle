@@ -124,6 +124,10 @@ footer {
   background-color: #333;
 }
 
+#guesses > div span.invalid {
+  border-color: #600;
+}
+
 .shake {
   animation: shake-anim 0.2s;
   animation-iteration-count: 3;

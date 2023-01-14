@@ -1,69 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="main.css" />
-    <title>Unfairdle</title>
-  </head>
-  <body>
-    <div id="root">
-      <div style="text-align: left">
-      <h1 >UNFAIRDLE</h1>
-      <p id="about">There are 14,000+ allowable Wordle guesses. Most make very poor Wordle target words. Unfairdle doesn't care.</p>
-      </div>
-      <div id="guesses">
-        <div>
-          <span></span><span></span><span></span><span></span><span></span>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="main.css" />
+        <title>Unfairdle</title>
+    </head>
+    <body>
+        <div id="root">
+            <div style="text-align: left">
+                <h1>UNFAIRDLE</h1>
+                <p id="about">
+                    There are 14,000+ allowable Wordle guesses, but most are
+                    very unfair Wordle answers. Unfairdle doesn't care.
+                </p>
+            </div>
+            <div id="guesses">
+                <div>
+                    <span></span><span></span><span></span><span></span
+                    ><span></span>
+                </div>
+                <div>
+                    <span></span><span></span><span></span><span></span
+                    ><span></span>
+                </div>
+                <div>
+                    <span></span><span></span><span></span><span></span
+                    ><span></span>
+                </div>
+                <div>
+                    <span></span><span></span><span></span><span></span
+                    ><span></span>
+                </div>
+                <div>
+                    <span></span><span></span><span></span><span></span
+                    ><span></span>
+                </div>
+                <div>
+                    <span></span><span></span><span></span><span></span
+                    ><span></span>
+                </div>
+            </div>
+            <div id="target-info">
+                <span
+                    >What does
+                    <a id="target-word" target="_blank" href=""></a> mean?</span
+                >
+                <a class="again" href="./">Play again.</a>
+            </div>
+            <div id="keyboard">
+                <div>
+                    <span data-key="q">Q</span><span data-key="w">W</span
+                    ><span data-key="e">E</span><span data-key="r">R</span
+                    ><span data-key="t">T</span><span data-key="y">Y</span
+                    ><span data-key="u">U</span><span data-key="i">I</span
+                    ><span data-key="o">O</span><span data-key="p">P</span>
+                </div>
+                <div>
+                    <span data-key="a">A</span><span data-key="s">S</span
+                    ><span data-key="d">D</span><span data-key="f">F</span
+                    ><span data-key="g">G</span><span data-key="h">H</span
+                    ><span data-key="j">J</span><span data-key="k">K</span
+                    ><span data-key="l">L</span>
+                </div>
+                <div>
+                    <span>go</span><span data-key="z">Z</span
+                    ><span data-key="x">X</span><span data-key="c">C</span
+                    ><span data-key="v">V</span><span data-key="b">B</span
+                    ><span data-key="n">N</span><span data-key="m">M</span
+                    ><span>del</span>
+                </div>
+            </div>
+            <footer>
+                <a class="again" href="./">Start new game</a> |
+                <a href="create.html">Custom word for a friend!</a>
+            </footer>
         </div>
-        <div>
-          <span></span><span></span><span></span><span></span><span></span>
-        </div>
-        <div>
-          <span></span><span></span><span></span><span></span><span></span>
-        </div>
-        <div>
-          <span></span><span></span><span></span><span></span><span></span>
-        </div>
-        <div>
-          <span></span><span></span><span></span><span></span><span></span>
-        </div>
-        <div>
-          <span></span><span></span><span></span><span></span><span></span>
-        </div>
-      </div>
-      <div id="target-info">
-        <span>What does <a id="target-word" target="_blank" href=""></a> mean?</span>
-        <span class="again">Play again.</span>
-      </div>
-      <div id="keyboard">
-        <div>
-          <span data-key="q">Q</span><span data-key="w">W</span
-          ><span data-key="e">E</span><span data-key="r">R</span
-          ><span data-key="t">T</span><span data-key="y">Y</span
-          ><span data-key="u">U</span><span data-key="i">I</span
-          ><span data-key="o">O</span><span data-key="p">P</span>
-        </div>
-        <div>
-          <span data-key="a">A</span><span data-key="s">S</span
-          ><span data-key="d">D</span><span data-key="f">F</span
-          ><span data-key="g">G</span><span data-key="h">H</span
-          ><span data-key="j">J</span><span data-key="k">K</span
-          ><span data-key="l">L</span>
-        </div>
-        <div>
-          <span >go</span><span data-key="z">Z</span><span data-key="x">X</span
-          ><span data-key="c">C</span><span data-key="v">V</span
-          ><span data-key="b">B</span><span data-key="n">N</span
-          ><span data-key="m">M</span><span>del</span>
-        </div>
-      </div>
-      <footer>
-        <a class="again" href="./">Start new game</a> |
-        <a href="create.html">Custom word for a friend!</a>
-      </footer>
-    </div>
-
-    <script type="module" src="src/main.ts"></script>
-  </body>
+        <script type="module" src="src/main.ts"></script>
+    </body>
 </html>
