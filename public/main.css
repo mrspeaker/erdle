@@ -12,6 +12,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+  flex: 1;
+  align-items: space-between;
 }
 
 a {
@@ -31,8 +34,17 @@ body {
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 1em;
+header {
+  background-color: #000;
+  font-size: 0.5em;
+}
+
+header h1 {
+    display: inline-block;
+}
+
+header > span {
+  display: inline-block;
 }
 
 button {

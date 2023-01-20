@@ -37,7 +37,6 @@ async function init_app() {
         })
     );
     // ====================================
-
     event(document.body, "keydown", (e: Event) => {
         const code = (e as KeyboardEvent).code;
         const key = (e as KeyboardEvent).key;
@@ -51,11 +50,8 @@ async function init_app() {
         }
     });
 
-    event($("#keyboard"), "click", (e) => {
-        const { target } = e;
-        if (!target) return;
-
-        const { nodeName, innerText } = target as HTMLElement;
+    const handleKeyboard = (target: HTMLElement) => {
+        const { nodeName, innerText } = target;
         if (nodeName.trim().toLowerCase() === "span") {
             const key = innerText.trim().toLowerCase();
             if (key === "go") {
@@ -70,6 +66,20 @@ async function init_app() {
                 });
             }
         }
+    };
+
+    event($("#keyboard"), "touchstart", (e: Event) => {
+        const touch = e as TouchEvent;
+        const { target } = touch;
+        if (!target) return;
+        e.preventDefault(); // Don't trigger click
+        handleKeyboard(target as HTMLElement);
+    });
+
+    event($("#keyboard"), "click", (e) => {
+        const { target } = e;
+        if (!target) return;
+        handleKeyboard(target as HTMLElement);
     });
 
     dispatch({
